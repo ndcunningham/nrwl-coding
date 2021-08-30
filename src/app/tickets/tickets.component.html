@@ -1,0 +1,33 @@
+<div class="container">
+  
+  <h2>Tickets</h2>
+
+  <label class="new-ticket-label" for="new-ticket">Enter a Ticket to create</label>
+  <input class="new-ticket" placeholder="Wash the Car..." type="text" name="newTicket" id="newTicket" (keyup.enter)="createNewTicket($event.target)">
+  <div class="filters">
+    <span class="filter-text">Filters</span>
+    <button (click)="filterTickets('All')"> All </button>
+    <button (click)="filterTickets('Completed')"> Completed </button>
+    <button (click)="filterTickets('In Complete')"> In Complete </button>
+  </div>
+  
+  <ul *ngIf="tickets | async as ticks; else loading ">
+    <li class="ticket" *ngFor="let t of ticks">
+      <input 
+      type="checkbox" 
+      name="ticket" 
+      [checked]="t.completed" 
+      [id]="t.id"
+      (change)="markTicketComplete(t.id, $event.target.value)">
+      <a [routerLink]="['ticket-detail', t.id]">Ticket: {{t.description}}</a>
+    </li>
+  </ul>
+
+</div>
+
+<ng-template #loading>
+  <p class="loading">
+  Loading your tickets...
+</p>
+</ng-template>
+<p class="error" *ngIf="error">An Error Occurred! Please refresh to try again</p>

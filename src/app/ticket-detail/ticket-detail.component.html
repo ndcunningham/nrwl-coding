@@ -1,0 +1,16 @@
+<div class="container" *ngIf="ticket$ | async as ticket">
+  <h2> Ticket Details </h2>
+
+  <p class="description">Description: {{ ticket.description }}</p>
+  <p>Completed: {{ ticket.completed ? 'Yes': 'No' }}</p>
+<div>
+  Assigned To:
+  <select name="assigned" id="assigned" [(ngModel)]="ticket.assigneeId" (change)="updateAssigned(ticket.id, $event.target.value)">
+    <option value="" [disabled]="true" [ngValue]="null" [selected]="true">No Selection</option>
+    <option *ngFor="let user of users$ | async" [value]="user.id">
+      {{ user.name }}
+    </option>
+  </select>
+</div>
+
+</div>
