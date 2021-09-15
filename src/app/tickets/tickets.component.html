@@ -4,11 +4,14 @@
 
   <label class="new-ticket-label" for="new-ticket">Enter a Ticket to create</label>
   <input class="new-ticket" placeholder="Wash the Car..." type="text" name="newTicket" id="newTicket" (keyup.enter)="createNewTicket($event.target)">
+  
+  <div><input type="text" placeholder="Search for Ticket" [formControl]="searchFilter"></div>
+
   <div class="filters">
     <span class="filter-text">Filters</span>
-    <button (click)="filterTickets('All')"> All </button>
-    <button (click)="filterTickets('Completed')"> Completed </button>
-    <button (click)="filterTickets('In Complete')"> In Complete </button>
+    <button [class.selected]="filterSelection === 'All'" (click)="filterTickets('All')"> All </button>  
+    <button [class.selected]="filterSelection === 'Completed'" (click)="filterTickets('Completed')"> Completed </button>
+    <button [class.selected]="filterSelection === 'In Complete'" (click)="filterTickets('In Complete')"> In Complete </button>
   </div>
   
   <ul *ngIf="tickets | async as ticks; else loading ">

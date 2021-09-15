@@ -5,7 +5,7 @@ import { BackendService } from './backend.service';
 import { TicketDetailComponent } from './ticket-detail/ticket-detail.component';
 import { RouterModule } from '@angular/router';
 import { TicketsComponent } from './tickets/tickets.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [	
@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     RouterModule.forRoot([
       {
         path: '', component: TicketsComponent
