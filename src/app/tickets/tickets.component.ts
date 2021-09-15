@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
+import { Store, select } from "@ngrx/store";
 import {
   BehaviorSubject,
   catchError,
@@ -11,6 +12,9 @@ import {
   tap,
 } from "rxjs";
 import { BackendService, Ticket } from "../backend.service";
+import { State } from "../reducers";
+import { loadTickets } from "../reducers/tickets.action";
+import { selectAllTickets } from '../reducers'
 
 @Component({
   selector: "app-tickets",
@@ -18,7 +22,7 @@ import { BackendService, Ticket } from "../backend.service";
   styleUrls: ["./tickets.component.sass"],
 })
 export class TicketsComponent implements OnInit {
-  tickets = null;
+  tickets = this.store.pipe(select(selectAllTickets));
   users = this.backend.users();
   selectedFilter$ = new BehaviorSubject<"All" | "In Complete" | "Completed">(
     "All"
@@ -27,15 +31,16 @@ export class TicketsComponent implements OnInit {
   searchFilter = new FormControl("");
   searchFilterDebounced$ = this.searchFilter.valueChanges.pipe(
     debounceTime(700),
-    startWith('')
+    startWith("")
   );
 
-  filterSelection = 'All';
+  filterSelection = "All";
 
-  constructor(public backend: BackendService) {}
+  constructor(public backend: BackendService, private store: Store<State>) {}
 
   ngOnInit() {
-    this.tickets = this.getUpdatedTicket();
+    // this.tickets = this.getUpdatedTicket();
+    this.store.dispatch(loadTickets());
   }
 
   filterTickets(selectedFilter: "All" | "In Complete" | "Completed") {
@@ -67,7 +72,6 @@ export class TicketsComponent implements OnInit {
       this.selectedFilter$,
       this.searchFilterDebounced$,
     ]).pipe(
-      tap(combined => console.log({combined})),
       map(([tickets, selectedFilter, searchFilterText]) => {
         return tickets
           .filter((ticket) => {
@@ -79,7 +83,8 @@ export class TicketsComponent implements OnInit {
               default:
                 return ticket;
             }
-          }).filter(ticket => this.searchForTicket(ticket, searchFilterText))
+          })
+          .filter((ticket) => this.searchForTicket(ticket, searchFilterText));
       }),
       tap(() => (this.error = false)),
       catchError((error) => {
